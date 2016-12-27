@@ -16,7 +16,7 @@ function lambda_arg_types(f::Function)
     # [eval(var.args[2]) for var in Base.uncompressed_ast(f.code).args[1]]
     c = methods(f).ms
     if length(c) != 1
-      error("The function must have one, and only one mehtod.")
+      error("The function must have one, and only one method.")
   end
   [c[1].sig.parameters[2:end]...]
 end
