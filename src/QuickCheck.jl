@@ -10,10 +10,15 @@ export condproperty
 export quantproperty
 
 function lambda_arg_types(f::Function)
-    if !isa(f.code, LambdaStaticData)
+    if !isa(f, Function)
         error("You must supply either an anonymous function with typed arguments or an array of argument types.")
     end
-    [eval(var.args[2]) for var in Base.uncompressed_ast(f.code).args[1]]
+    # [eval(var.args[2]) for var in Base.uncompressed_ast(f.code).args[1]]
+    c = methods(f).ms
+    if length(c) != 1
+      error("The function must have one, and only one mehtod.")
+  end
+  [c[1].sig.parameters[2:end]...]
 end
 
 # Simple properties
@@ -43,7 +48,7 @@ function check_property(prop::Function, arggens, argconds, ntests, maxtests)
     totalTests = 0
     for i in 1:ntests
         goodargs = false
-        args = {}
+        args = []
         while !goodargs
             totalTests += 1
             if totalTests > maxtests
@@ -63,7 +68,7 @@ end
 # Default generators for primitive types
 generator{T<:Unsigned}(::Type{T}, size) = convert(T, rand(1:size))
 generator{T<:Signed}(::Type{T}, size) = convert(T, rand(-size:size))
-generator{T<:FloatingPoint}(::Type{T}, size) = convert(T, (rand()-0.5).*size)
+generator{T<:AbstractFloat}(::Type{T}, size) = convert(T, (rand()-0.5).*size)
 # This won't generate interesting UTF-8, but doing that is a Hard Problem
 generator{T<:String}(::Type{T}, size) = convert(T, randstring(size))
 
