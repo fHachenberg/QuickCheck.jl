@@ -66,22 +66,22 @@ function check_property(prop::Function, arggens, argconds, ntests, maxtests)
 end
 
 # Default generators for primitive types
-generator{T<:Unsigned}(::Type{T}, size) = convert(T, rand(1:size))
-generator{T<:Signed}(::Type{T}, size) = convert(T, rand(-size:size))
-generator{T<:AbstractFloat}(::Type{T}, size) = convert(T, (rand()-0.5).*size)
+generator(::Type{T}, size) using T<:Unsigned = convert(T, rand(1:size))
+generator(::Type{T}, size) using T<:Signed = convert(T, rand(-size:size))
+generator(::Type{T}, size) using T<:AbstractFloat = convert(T, (rand()-0.5).*size)
 # This won't generate interesting UTF-8, but doing that is a Hard Problem
-generator{T<:String}(::Type{T}, size) = convert(T, randstring(size))
+generator(::Type{T}, size) using T<:String = convert(T, randstring(size))
 
 generator(::Type{Any}, size) = error("Property variables cannot by typed Any.")
 
 # Generator for array types
-function generator{T,n}(::Type{Array{T,n}}, size)
+function generator(::Type{Array{T,n}}, size) using {T,n}
     dims = [rand(1:size) for i in 1:n]
     reshape([generator(T, size) for x in 1:prod(dims)], dims...)
 end
 
 # Generator for composite types
-function generator{C}(::Type{C}, size)
+function generator(::Type{C}, size) using C
     if C.types == ()
         error("No generator defined for type $C.")
     end
