@@ -1,0 +1,6 @@
+name = "QuickCheck"
+uuid = "abda2286-424d-4629-8a5e-4a665049b11d"
+version = "0.1.0"
+
+[compat]
+julia = "≥ 0.7.0"

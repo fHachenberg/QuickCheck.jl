@@ -54,7 +54,7 @@ Methods
 
     Test the property ``prop``, with argument tpyes ``typs``, running ``ntests`` tests, and using the argument generators arggens. Each argument generator must be a function in a single positive integer which returns an item of the appropriate type which has "size" of the integer. This integer is used to scale the tests. This is a more efficient and flexible approach than conditional properties, but is sometimes harder to express::
 
-        julia> quantproperty((x::Int, y::Int)->(x/y)>=floor(x/y), 100, (size)->QuickCheck.generator(Int,size), (size)->randbool() ? rand(1:size) : rand(-size:1))
+        julia> quantproperty((x::Int, y::Int)->(x/y)>=floor(x/y), 100, (size)->QuickCheck.generator(Int,size), (size)->rand(Bool) ? rand(1:size) : rand(-size:1))
         OK, passed 100 tests.
 
 ----------
